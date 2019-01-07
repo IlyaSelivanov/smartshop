@@ -5,7 +5,7 @@ export class Products extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { forecasts: [], loading: true };
+        this.state = { products: [], loading: true };
 
         fetch('api/Products/List')
             .then(response => response.json())
