@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartShop.Domain.Concrete;
@@ -9,9 +10,10 @@ using SmartShop.Domain.Concrete;
 namespace SmartShop.WebUI.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190110063459_NullableCategotyId")]
+    partial class NullableCategotyId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,11 +74,6 @@ namespace SmartShop.WebUI.Migrations
                             Id = 2,
                             CategoryId = 1,
                             Name = "Молоко"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Fruits"
                         });
                 });
 
@@ -92,58 +89,11 @@ namespace SmartShop.WebUI.Migrations
                     b.ToTable("Shops");
                 });
 
-            modelBuilder.Entity("SmartShop.Domain.Entities.ShopProduct", b =>
-                {
-                    b.Property<int>("ShopId");
-
-                    b.Property<int>("ProductId");
-
-                    b.HasKey("ShopId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ShopProduct");
-                });
-
             modelBuilder.Entity("SmartShop.Domain.Entities.Product", b =>
                 {
                     b.HasOne("SmartShop.Domain.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
-                });
-
-            modelBuilder.Entity("SmartShop.Domain.Entities.Shop", b =>
-                {
-                    b.OwnsOne("SmartShop.Domain.Entities.Location", "Location", b1 =>
-                        {
-                            b1.Property<int>("ShopId");
-
-                            b1.Property<double>("Lat");
-
-                            b1.Property<double>("Lng");
-
-                            b1.HasKey("ShopId");
-
-                            b1.ToTable("Shops");
-
-                            b1.HasOne("SmartShop.Domain.Entities.Shop")
-                                .WithOne("Location")
-                                .HasForeignKey("SmartShop.Domain.Entities.Location", "ShopId")
-                                .OnDelete(DeleteBehavior.Cascade);
-                        });
-                });
-
-            modelBuilder.Entity("SmartShop.Domain.Entities.ShopProduct", b =>
-                {
-                    b.HasOne("SmartShop.Domain.Entities.Product", "Product")
-                        .WithMany("ShopProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartShop.Domain.Entities.Shop", "Shop")
-                        .WithMany("ShopProducts")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

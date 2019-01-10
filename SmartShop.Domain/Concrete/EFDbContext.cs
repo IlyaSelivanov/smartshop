@@ -17,6 +17,21 @@ namespace SmartShop.Domain.Concrete {
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
 
+            modelBuilder.Entity<ShopProduct>()
+                .HasKey(s => new { s.ShopId, s.ProductId });
+
+            modelBuilder.Entity<ShopProduct>()
+                .HasOne(sp => sp.Shop)
+                .WithMany(s => s.ShopProducts)
+                .HasForeignKey(sp => sp.ShopId);
+
+            modelBuilder.Entity<ShopProduct>()
+                .HasOne(sp => sp.Product)
+                .WithMany(p => p.ShopProducts)
+                .HasForeignKey(sp => sp.ProductId);
+
+            modelBuilder.Entity<Shop>().OwnsOne(s => s.Location);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category[]
                 {
@@ -28,7 +43,8 @@ namespace SmartShop.Domain.Concrete {
                 new Product[]
                 {
                     new Product{Id = 1, Name = "Хлеб", CategoryId = 1},
-                    new Product{Id = 2, Name = "Молоко", CategoryId = 1}
+                    new Product{Id = 2, Name = "Молоко", CategoryId = 1},
+                    new Product{Id = 3, Name = "Fruits"}
                 });
 
             base.OnModelCreating(modelBuilder);
