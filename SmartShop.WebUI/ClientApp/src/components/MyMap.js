@@ -37,6 +37,10 @@ export class MyMap extends Component {
             <GoogleMap
                 defaultCenter={this.state.center}
                 defaultZoom={15}
+                onClick={(e) => {
+                    console.log(e.latLng.lat());
+                    console.log(e.latLng.lng());
+                }}
             >
             </GoogleMap>
         ));
@@ -46,7 +50,7 @@ export class MyMap extends Component {
                     <Col>
                         <GoogleMapExample
                             containerElement={<div style={{ height: `500px`, width: '500px' }} />}
-                            mapElement={<div style={{ height: `100%` }} />}
+                            mapElement={<div style={{ height: `100%` }}/>}
                         />
                     </Col>
                 </Row>
