@@ -45,7 +45,6 @@ export class Products extends Component {
         return (
             <div>
                 <h1>Products</h1>
-                <p>This component demonstrates fetching data from the server.</p>
                 {contents}
             </div>
         );

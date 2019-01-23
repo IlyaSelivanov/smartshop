@@ -6,6 +6,7 @@ import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import { Products } from './components/Products';
 import { MyMap } from './components/MyMap';
+import { ShopList } from './components/Shops';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -18,6 +19,7 @@ export default class App extends Component {
                 <Route path='/fetch-data' component={FetchData} />
                 <Route path='/products' component={Products} />
                 <Route path='/mymap' component={MyMap} />
+                <Route path='/shops' component={ShopList} />
             </Layout>
         );
     }
