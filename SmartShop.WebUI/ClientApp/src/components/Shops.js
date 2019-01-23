@@ -19,12 +19,21 @@ export class Shop extends Component {
     }
 
     render() {
+        const divStyle = {
+            'display': 'flex',
+            'flex-direction': 'row',
+            'justify-content': 'space-around',
+            'align-items': 'center'
+        }
+
         return (
             <tr key={this.state.data.id}>
                 <td>{this.state.data.name}</td>
                 <td>
-                    <Button outline color="success" onClick={this.onEdit}>Edit</Button>
-                    <Button outline color="danger" onClick={this.onDelete}>Delete</Button>
+                    <div style={divStyle}>
+                        <Button outline color="success" onClick={this.onEdit}>Edit</Button>
+                        <Button outline color="danger" onClick={this.onDelete}>Delete</Button>
+                    </div>
                 </td>
             </tr>
         );
