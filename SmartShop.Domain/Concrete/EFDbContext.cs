@@ -8,7 +8,7 @@ namespace SmartShop.Domain.Concrete {
         public DbSet<Shop> Shops { get; set; }
 
         public EFDbContext(DbContextOptions<EFDbContext> options) : base(options) {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -30,8 +30,6 @@ namespace SmartShop.Domain.Concrete {
                 .WithMany(p => p.ShopProducts)
                 .HasForeignKey(sp => sp.ProductId);
 
-            modelBuilder.Entity<Shop>().OwnsOne(s => s.Location);
-
             modelBuilder.Entity<Category>().HasData(
                 new Category[]
                 {
@@ -45,6 +43,14 @@ namespace SmartShop.Domain.Concrete {
                     new Product{Id = 1, Name = "Хлеб", CategoryId = 1},
                     new Product{Id = 2, Name = "Молоко", CategoryId = 1},
                     new Product{Id = 3, Name = "Fruits"}
+                });
+
+            modelBuilder.Entity<Shop>().HasData(
+                new Shop[] {
+                    new Shop{Id = 1, Name = "АТБ", Adress = "ул. Парковая"},
+                    new Shop{Id = 2, Name = "АТБ", Adress = "ул. Дворцовая"},
+                    new Shop{Id = 3, Name = "Prostor", Adress = "ул. Дворцовая"},
+                    new Shop{Id = 4, Name = "Квартал", Adress = "Mira ave."}
                 });
 
             base.OnModelCreating(modelBuilder);

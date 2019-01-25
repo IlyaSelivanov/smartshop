@@ -29,6 +29,7 @@ export class Shop extends Component {
         return (
             <tr key={this.state.data.id}>
                 <td>{this.state.data.name}</td>
+                <td>{this.state.data.adress}</td>
                 <td>
                     <div style={divStyle}>
                         <Button outline color="success" onClick={this.onEdit}>Edit</Button>
@@ -84,6 +85,7 @@ export class ShopList extends Component {
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Adress</th>
                         <th />
                     </tr>
                 </thead>

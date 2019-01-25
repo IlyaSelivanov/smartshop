@@ -5,17 +5,13 @@ namespace SmartShop.Domain.Entities {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Adress { get; set; }
-        public Location Location { get; set; }
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public List<ShopProduct> ShopProducts { get; set; }
 
         public Shop() {
             ShopProducts = new List<ShopProduct>();
         }
-    }
-
-    public class Location {
-        public double Lat { get; set; }
-        public double Lng { get; set; }
     }
 
     public class ShopProduct {

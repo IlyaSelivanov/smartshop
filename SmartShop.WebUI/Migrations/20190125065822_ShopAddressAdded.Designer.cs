@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartShop.Domain.Concrete;
@@ -9,9 +10,10 @@ using SmartShop.Domain.Concrete;
 namespace SmartShop.WebUI.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190125065822_ShopAddressAdded")]
+    partial class ShopAddressAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,41 +89,11 @@ namespace SmartShop.WebUI.Migrations
 
                     b.Property<string>("Adress");
 
-                    b.Property<double?>("Lat");
-
-                    b.Property<double?>("Lng");
-
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("Shops");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Adress = "ул. Парковая",
-                            Name = "АТБ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Adress = "ул. Дворцовая",
-                            Name = "АТБ"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Adress = "ул. Дворцовая",
-                            Name = "Prostor"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Adress = "Mira ave.",
-                            Name = "Квартал"
-                        });
                 });
 
             modelBuilder.Entity("SmartShop.Domain.Entities.ShopProduct", b =>
@@ -142,6 +114,27 @@ namespace SmartShop.WebUI.Migrations
                     b.HasOne("SmartShop.Domain.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
+                });
+
+            modelBuilder.Entity("SmartShop.Domain.Entities.Shop", b =>
+                {
+                    b.OwnsOne("SmartShop.Domain.Entities.Location", "Location", b1 =>
+                        {
+                            b1.Property<int>("ShopId");
+
+                            b1.Property<double>("Lat");
+
+                            b1.Property<double>("Lng");
+
+                            b1.HasKey("ShopId");
+
+                            b1.ToTable("Shops");
+
+                            b1.HasOne("SmartShop.Domain.Entities.Shop")
+                                .WithOne("Location")
+                                .HasForeignKey("SmartShop.Domain.Entities.Location", "ShopId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
                 });
 
             modelBuilder.Entity("SmartShop.Domain.Entities.ShopProduct", b =>
