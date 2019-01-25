@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { Redirect } from 'react-router'
+import { Map } from './Map'
 
 export class Shop extends Component {
     constructor(props) {
@@ -136,6 +137,7 @@ export class ShopForm extends Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
         this.onAddressChange = this.onAddressChange.bind(this);
+        this.onMapClickHandle = this.onMapClickHandle.bind(this);
     }
 
     onSubmit(e) {
@@ -156,20 +158,53 @@ export class ShopForm extends Component {
         this.setState({ shop: shop });
     }
 
+    onMapClickHandle(coords) {
+        console.log("onMapClickHandle");
+        console.log(coords.lat);
+        console.log(coords.lng);
+
+        let shop = this.state.shop;
+        shop.lat = coords.lat;
+        shop.lng = coords.lng;
+        this.setState({ shop: shop });
+    }
+
     render() {
         return (
             <div>
                 <h1>Shop Form</h1>
-                <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <Label for="name">Name</Label>
-                        <Input type="text" name="name" id="name" value={this.state.shop.name} onChange={this.onNameChange}></Input>                        
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="adress">Address</Label>
-                        <Input type="text" name="address" id="address" value={this.state.shop.address} onChange={this.onAddressChange}></Input>
-                    </FormGroup>
-                </Form>
+                <Row>
+                    <Col>
+                        <Map onMapClick={this.onMapClickHandle} />
+                    </Col>
+                    <Col>
+                        <Form onSubmit={this.onSubmit}>
+                            <FormGroup>
+                                <Label for="name">Name</Label>
+                                <Input type="text" name="name" id="name" value={this.state.shop.name} onChange={this.onNameChange}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="address">Address</Label>
+                                <Input type="text" name="address" id="address" value={this.state.shop.address} onChange={this.onAddressChange}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Row form>
+                                    <Label>Coordinates:</Label>
+                                </Row>
+                                <Row form>
+                                    <Col sm={1}>Lat: </Col>
+                                    <Col>
+                                        <Input type="text" name="lat" id="lat" value={this.state.shop.lat == null ? 'null' : this.state.shop.lat} readOnly></Input>
+                                    </Col>
+                                    <Col sm={1}>Lng: </Col>
+                                    <Col>
+                                        <Input type="text" name="lng" id="lng" value={this.state.shop.lng == null ? 'null' : this.state.shop.lng} readOnly></Input>
+                                    </Col>
+                                </Row>
+                            </FormGroup>
+                        </Form>
+                    </Col>
+                </Row>
             </div>
         );
     }

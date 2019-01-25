@@ -19,6 +19,8 @@ export class Map extends Component {
             loading: true,
             center: null
         };
+
+        this.onMapClick = this.onMapClick.bind(this);
     }
 
     componentDidMount() {
@@ -32,15 +34,23 @@ export class Map extends Component {
         });
     }
 
+    onMapClick(e) {
+        console.log(e.latLng.lat());
+        console.log(e.latLng.lng());
+
+        if (this.props.onMapClick == null) {
+            return;
+        } else {
+            this.props.onMapClick({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+        }
+    }
+
     render() {
         let GoogleMapExample = withGoogleMap(props => (
             <GoogleMap
                 defaultCenter={this.state.center}
                 defaultZoom={15}
-                onClick={(e) => {
-                    console.log(e.latLng.lat());
-                    console.log(e.latLng.lng());
-                }}
+                onClick={this.onMapClick}
             >
             </GoogleMap>
         ));
