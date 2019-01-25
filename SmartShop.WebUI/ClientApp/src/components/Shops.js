@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Redirect } from 'react-router'
 
 export class Shop extends Component {
     constructor(props) {
@@ -21,15 +22,15 @@ export class Shop extends Component {
     render() {
         const divStyle = {
             'display': 'flex',
-            'flex-direction': 'row',
-            'justify-content': 'space-around',
-            'align-items': 'center'
+            'flexDirection': 'row',
+            'justifyContent': 'space-around',
+            'alignItems': 'center'
         }
 
         return (
             <tr key={this.state.data.id}>
                 <td>{this.state.data.name}</td>
-                <td>{this.state.data.adress}</td>
+                <td>{this.state.data.address}</td>
                 <td>
                     <div style={divStyle}>
                         <Button outline color="success" onClick={this.onEdit}>Edit</Button>
@@ -46,7 +47,9 @@ export class ShopList extends Component {
         super(props);
         this.state = {
             shops: [],
-            loading: true
+            loading: true,
+            redirectToEdit: false,
+            shopToEdit: null
         };
 
         this.onRemoveShop = this.onRemoveShop.bind(this);
@@ -73,28 +76,42 @@ export class ShopList extends Component {
     onEditShop(shop) {
         console.log('edit');
         console.log(shop);
-        this.props.history.push("/");
+
+        this.setState({ redirectToEdit: true, shopToEdit: shop });
     }
 
     renderShopsTable(shops) {
+        const redirect = this.state.redirectToEdit;
+
+        if (redirect) {
+            return <Redirect to={{
+                pathname: '/editShop',
+                state: { shop: this.state.shopToEdit }
+            }}
+            />
+        }
+
         var remove = this.onRemoveShop;
         var edit = this.onEditShop;
 
         return (
-            <table className='table table-striped'>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Adress</th>
-                        <th />
-                    </tr>
-                </thead>
-                <tbody>
-                    {shops.map((shop) => {
-                        return <Shop key={shop.id} shop={shop} onRemove={remove} onEdit={edit} />
-                    })}
-                </tbody>
-            </table>
+            <div>
+                <h1>Shops</h1>
+                <table className='table table-striped'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {shops.map((shop) => {
+                            return <Shop key={shop.id} shop={shop} onRemove={remove} onEdit={edit} />
+                        })}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 
@@ -105,8 +122,54 @@ export class ShopList extends Component {
 
         return (
             <div>
-                <h1>Shops</h1>
                 {content}
+            </div>
+        );
+    }
+}
+
+export class ShopForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { shop: this.props.location.state.shop };
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onNameChange = this.onNameChange.bind(this);
+        this.onAddressChange = this.onAddressChange.bind(this);
+    }
+
+    onSubmit(e) {
+        console.log("Shop Form onSubmit()");
+    }
+
+    onNameChange(e) {
+        let shop = this.state.shop;
+        shop.name = e.target.value;
+
+        this.setState({ shop: shop });
+    }
+
+    onAddressChange(e) {
+        let shop = this.state.shop;
+        shop.address = e.target.value;
+
+        this.setState({ shop: shop });
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>Shop Form</h1>
+                <Form onSubmit={this.onSubmit}>
+                    <FormGroup>
+                        <Label for="name">Name</Label>
+                        <Input type="text" name="name" id="name" value={this.state.shop.name} onChange={this.onNameChange}></Input>                        
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="adress">Address</Label>
+                        <Input type="text" name="address" id="address" value={this.state.shop.address} onChange={this.onAddressChange}></Input>
+                    </FormGroup>
+                </Form>
             </div>
         );
     }

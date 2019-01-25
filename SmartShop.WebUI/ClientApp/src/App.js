@@ -5,8 +5,8 @@ import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import { Products } from './components/Products';
-import { MyMap } from './components/MyMap';
-import { ShopList } from './components/Shops';
+import { Map } from './components/Map';
+import { ShopList, ShopForm } from './components/Shops';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -18,8 +18,9 @@ export default class App extends Component {
                 <Route path='/counter' component={Counter} />
                 <Route path='/fetch-data' component={FetchData} />
                 <Route path='/products' component={Products} />
-                <Route path='/mymap' component={MyMap} />
+                <Route path='/map' component={Map} />
                 <Route path='/shops' component={ShopList} />
+                <Route path='/editShop' component={ShopForm} />
             </Layout>
         );
     }

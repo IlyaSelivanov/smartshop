@@ -47,10 +47,10 @@ namespace SmartShop.Domain.Concrete {
 
             modelBuilder.Entity<Shop>().HasData(
                 new Shop[] {
-                    new Shop{Id = 1, Name = "АТБ", Adress = "ул. Парковая"},
-                    new Shop{Id = 2, Name = "АТБ", Adress = "ул. Дворцовая"},
-                    new Shop{Id = 3, Name = "Prostor", Adress = "ул. Дворцовая"},
-                    new Shop{Id = 4, Name = "Квартал", Adress = "Mira ave."}
+                    new Shop{Id = 1, Name = "АТБ", Address = "ул. Парковая"},
+                    new Shop{Id = 2, Name = "АТБ", Address = "ул. Дворцовая"},
+                    new Shop{Id = 3, Name = "Prostor", Address = "ул. Дворцовая"},
+                    new Shop{Id = 4, Name = "Квартал", Address = "Mira ave."}
                 });
 
             base.OnModelCreating(modelBuilder);

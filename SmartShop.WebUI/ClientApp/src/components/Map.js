@@ -10,8 +10,8 @@ const geolocation = (
     }
 );
 
-export class MyMap extends Component {
-    static displayName = MyMap.name;
+export class Map extends Component {
+    static displayName = Map.name;
 
     constructor(props) {
         super(props);
