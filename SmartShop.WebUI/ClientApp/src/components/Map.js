@@ -35,9 +35,6 @@ export class Map extends Component {
     }
 
     onMapClick(e) {
-        console.log(e.latLng.lat());
-        console.log(e.latLng.lng());
-
         if (this.props.onMapClick == null) {
             return;
         } else {

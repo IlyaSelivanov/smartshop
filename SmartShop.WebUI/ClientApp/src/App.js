@@ -6,7 +6,7 @@ import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import { Products } from './components/Products';
 import { Map } from './components/Map';
-import { ShopList, ShopForm } from './components/Shops';
+import { ShopList, ShopEdit, ShopCreate } from './components/Shops';
 
 export default class App extends Component {
     static displayName = App.name;
@@ -20,7 +20,8 @@ export default class App extends Component {
                 <Route path='/products' component={Products} />
                 <Route path='/map' component={Map} />
                 <Route path='/shops' component={ShopList} />
-                <Route path='/editShop' component={ShopForm} />
+                <Route path='/editShop/:id' component={ShopEdit} />
+                <Route path='/createShop' component={ShopCreate} />
             </Layout>
         );
     }

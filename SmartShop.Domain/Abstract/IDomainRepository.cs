@@ -1,5 +1,6 @@
 ﻿using SmartShop.Domain.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartShop.Domain.Abstract
 {
@@ -8,5 +9,9 @@ namespace SmartShop.Domain.Abstract
         IEnumerable<Product> Products { get; }
         IEnumerable<Category> Categories { get; }
         IEnumerable<Shop> Shops { get; }
+
+        Task CreateShopAsync(Shop shop);
+        Task UpdateShopAsync(int id, Shop shop);
+        Task<bool> DeleteShopAsync(int id);
     }
 }

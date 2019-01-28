@@ -1,7 +1,10 @@
 ﻿import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom';
 import { Map } from './Map'
+
+//https://appdividend.com/2018/11/11/react-crud-example-mern-stack-tutorial/#11_Edit_and_Update_Functionality
 
 export class Shop extends Component {
     constructor(props) {
@@ -34,7 +37,7 @@ export class Shop extends Component {
                 <td>{this.state.data.address}</td>
                 <td>
                     <div style={divStyle}>
-                        <Button outline color="success" onClick={this.onEdit}>Edit</Button>
+                        <Link to={"/editShop/" + this.state.data.id} className="btn btn-primary">Edit</Link>
                         <Button outline color="danger" onClick={this.onDelete}>Delete</Button>
                     </div>
                 </td>
@@ -49,12 +52,12 @@ export class ShopList extends Component {
         this.state = {
             shops: [],
             loading: true,
-            redirectToEdit: false,
+            redirectToShopForm: false,
             shopToEdit: null
         };
 
+        this.onAddShop = this.onAddShop.bind(this);
         this.onRemoveShop = this.onRemoveShop.bind(this);
-        this.onEditShop = this.onEditShop.bind(this);
     }
 
     componentDidMount() {
@@ -69,49 +72,55 @@ export class ShopList extends Component {
             .catch((error) => { console.log(error); });
     }
 
+    onAddShop() {
+        this.setState({ redirectToShopForm: true, shopToEdit: { name: '', address: '', lat: null, lng: null } });
+    }
+
     onRemoveShop(shop) {
         console.log('remove');
         console.log(shop);
-    }
 
-    onEditShop(shop) {
-        console.log('edit');
-        console.log(shop);
+        fetch('api/Shops/' + shop.id, {
+            method: 'DELETE'
+        })
+            .catch((error) => { console.log(error); });
 
-        this.setState({ redirectToEdit: true, shopToEdit: shop });
+        var array = [...this.state.shops];
+        var index = array.indexOf(shop);
+        if (index !== -1) {
+            array.splice(index, 1);
+            this.setState({ shops: array });
+        }
     }
 
     renderShopsTable(shops) {
-        const redirect = this.state.redirectToEdit;
-
-        if (redirect) {
-            return <Redirect to={{
-                pathname: '/editShop',
-                state: { shop: this.state.shopToEdit }
-            }}
-            />
-        }
-
         var remove = this.onRemoveShop;
         var edit = this.onEditShop;
 
         return (
             <div>
-                <h1>Shops</h1>
-                <table className='table table-striped'>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {shops.map((shop) => {
-                            return <Shop key={shop.id} shop={shop} onRemove={remove} onEdit={edit} />
-                        })}
-                    </tbody>
-                </table>
+                <div>
+                    <h1>Shops</h1>
+                </div>
+                <div>
+                    <Link to={'/createShop'} className="btn btn-primary">Add shop</Link>
+                </div>
+                <div>
+                    <table className='table table-striped'>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {shops.map((shop) => {
+                                return <Shop key={shop.id} shop={shop} onRemove={remove} onEdit={edit} />
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
@@ -129,47 +138,83 @@ export class ShopList extends Component {
     }
 }
 
-export class ShopForm extends Component {
+export class ShopEdit extends Component {
     constructor(props) {
         super(props);
-        this.state = { shop: this.props.location.state.shop };
+        this.state = {
+            redirectToShopList: false,
+            shop_name: '',
+            shop_address: '',
+            shop_lat: '',
+            shop_lng: ''
+        };
 
         this.onSubmit = this.onSubmit.bind(this);
+        this.onCancel = this.onCancel.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
         this.onAddressChange = this.onAddressChange.bind(this);
         this.onMapClickHandle = this.onMapClickHandle.bind(this);
     }
 
+    componentDidMount() {
+        fetch('api/Shops/' + this.props.match.params.id, {
+            mathod: 'GET'
+        })
+            .then(response => response.json())
+            .then(data =>
+                this.setState({
+                    shop_name: data.name,
+                    shop_address: data.address,
+                    shop_lat: data.lat,
+                    shop_lng: data.lng
+                }))
+            .catch(error => console.log(error));
+    }
+
     onSubmit(e) {
-        console.log("Shop Form onSubmit()");
+        e.preventDefault();
+
+        const shop = {
+            name: this.state.shop_name,
+            address: this.state.shop_address,
+            lat: this.state.shop_lat,
+            lng: this.state.shop_lng
+        };
+
+        fetch('api/Shops/' + this.props.match.params.id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(shop)
+
+        })
+            .catch((error) => { console.log(error); });
+
+        this.setState({ redirectToShopList: true })
+    }
+
+    onCancel(e) {
+        this.setState({ redirectToShopList: true })
     }
 
     onNameChange(e) {
-        let shop = this.state.shop;
-        shop.name = e.target.value;
-
-        this.setState({ shop: shop });
+        this.setState({ shop_name: e.target.value });
     }
 
     onAddressChange(e) {
-        let shop = this.state.shop;
-        shop.address = e.target.value;
-
-        this.setState({ shop: shop });
+        this.setState({ shop_address: e.target.value });
     }
 
     onMapClickHandle(coords) {
-        console.log("onMapClickHandle");
-        console.log(coords.lat);
-        console.log(coords.lng);
-
-        let shop = this.state.shop;
-        shop.lat = coords.lat;
-        shop.lng = coords.lng;
-        this.setState({ shop: shop });
+        this.setState({ shop_lat: coords.lat, shop_lng: coords.lng });
     }
 
     render() {
+        if (this.state.redirectToShopList) {
+            return <Redirect to={{
+                pathname: '/shops'
+            }} />
+        }
+
         return (
             <div>
                 <h1>Shop Form</h1>
@@ -181,11 +226,11 @@ export class ShopForm extends Component {
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <Label for="name">Name</Label>
-                                <Input type="text" name="name" id="name" value={this.state.shop.name} onChange={this.onNameChange}></Input>
+                                <Input type="text" name="name" id="name" value={this.state.shop_name} onChange={this.onNameChange}></Input>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="address">Address</Label>
-                                <Input type="text" name="address" id="address" value={this.state.shop.address} onChange={this.onAddressChange}></Input>
+                                <Input type="text" name="address" id="address" value={this.state.shop_address} onChange={this.onAddressChange}></Input>
                             </FormGroup>
                             <FormGroup>
                                 <Row form>
@@ -194,13 +239,123 @@ export class ShopForm extends Component {
                                 <Row form>
                                     <Col sm={1}>Lat: </Col>
                                     <Col>
-                                        <Input type="text" name="lat" id="lat" value={this.state.shop.lat == null ? 'null' : this.state.shop.lat} readOnly></Input>
+                                        <Input type="text" name="lat" id="lat" value={this.state.shop_lat == null ? 'null' : this.state.shop_lat} readOnly></Input>
                                     </Col>
                                     <Col sm={1}>Lng: </Col>
                                     <Col>
-                                        <Input type="text" name="lng" id="lng" value={this.state.shop.lng == null ? 'null' : this.state.shop.lng} readOnly></Input>
+                                        <Input type="text" name="lng" id="lng" value={this.state.shop_lng == null ? 'null' : this.state.shop_lng} readOnly></Input>
                                     </Col>
                                 </Row>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Button color="primary" onClick={this.onSubmit}>Save</Button>
+                                <Button color="danger" onClick={this.onCancel}>Cancel</Button>
+                            </FormGroup>
+                        </Form>
+                    </Col>
+                </Row>
+            </div>
+        );
+    }
+}
+
+export class ShopCreate extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            redirectToShopList: false,
+            shop_name: '',
+            shop_address: '',
+            shop_lat: '',
+            shop_lng: ''
+        };
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onCancel = this.onCancel.bind(this);
+        this.onNameChange = this.onNameChange.bind(this);
+        this.onAddressChange = this.onAddressChange.bind(this);
+        this.onMapClickHandle = this.onMapClickHandle.bind(this);
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+
+        const shop = {
+            name: this.state.shop_name,
+            address: this.state.shop_address,
+            lat: this.state.shop_lat,
+            lng: this.state.shop_lng
+        };
+
+        fetch('api/Shops', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(shop)
+
+        })
+            .catch((error) => { console.log(error); });
+
+        this.setState({ redirectToShopList: true })
+    }
+
+    onCancel(e) {
+        this.setState({ redirectToShopList: true })
+    }
+
+    onNameChange(e) {
+        this.setState({ shop_name: e.target.value });
+    }
+
+    onAddressChange(e) {
+        this.setState({ shop_address: e.target.value });
+    }
+
+    onMapClickHandle(coords) {
+        this.setState({ shop_lat: coords.lat, shop_lng: coords.lng });
+    }
+
+    render() {
+        if (this.state.redirectToShopList) {
+            return <Redirect to={{
+                pathname: '/shops'
+            }} />
+        }
+
+        return (
+            <div>
+                <h1>Shop Form</h1>
+                <Row>
+                    <Col>
+                        <Map onMapClick={this.onMapClickHandle} />
+                    </Col>
+                    <Col>
+                        <Form onSubmit={this.onSubmit}>
+                            <FormGroup>
+                                <Label for="name">Name</Label>
+                                <Input type="text" name="name" id="name" value={this.state.shop_name} onChange={this.onNameChange}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="address">Address</Label>
+                                <Input type="text" name="address" id="address" value={this.state.shop_address} onChange={this.onAddressChange}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Row form>
+                                    <Label>Coordinates:</Label>
+                                </Row>
+                                <Row form>
+                                    <Col sm={1}>Lat: </Col>
+                                    <Col>
+                                        <Input type="text" name="lat" id="lat" value={this.state.shop_lat == null ? 'null' : this.state.shop_lat} readOnly></Input>
+                                    </Col>
+                                    <Col sm={1}>Lng: </Col>
+                                    <Col>
+                                        <Input type="text" name="lng" id="lng" value={this.state.shop_lng == null ? 'null' : this.state.shop_lng} readOnly></Input>
+                                    </Col>
+                                </Row>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Button color="primary" onClick={this.onSubmit}>Save</Button>
+                                <Button color="danger" onClick={this.onCancel}>Cancel</Button>
                             </FormGroup>
                         </Form>
                     </Col>

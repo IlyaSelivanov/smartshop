@@ -1,6 +1,8 @@
 ﻿using SmartShop.Domain.Abstract;
 using SmartShop.Domain.Entities;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartShop.Domain.Concrete {
     public class EFDomainRepository : IDomainRepository {
@@ -20,6 +22,41 @@ namespace SmartShop.Domain.Concrete {
 
         public EFDomainRepository(EFDbContext context) {
             _context = context;
+        }
+
+        public async Task CreateShopAsync(Shop shop) {
+            Shop existing = _context.Shops.FirstOrDefault(s => s.Id == shop.Id);
+
+            if (existing == null) {
+                _context.Shops.Add(shop);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateShopAsync(int id, Shop shop) {
+            Shop existing = _context.Shops.FirstOrDefault(s => s.Id == id);
+
+            if (existing == null)
+                return;
+
+            existing.Name = shop.Name;
+            existing.Address = shop.Address;
+            existing.Lat = shop.Lat;
+            existing.Lng = shop.Lng;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteShopAsync(int id) {
+            Shop shop = _context.Shops.FirstOrDefault(s => s.Id == id);
+
+            if (shop == null)
+                return false;
+            else {
+                _context.Shops.Remove(shop);
+                await _context.SaveChangesAsync();
+                return true;
+            }
         }
     }
 }
