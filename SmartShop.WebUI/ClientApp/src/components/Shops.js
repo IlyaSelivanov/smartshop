@@ -37,7 +37,7 @@ export class Shop extends Component {
                 <td>{this.state.data.address}</td>
                 <td>
                     <div style={divStyle}>
-                        <Link to={"/editShop/" + this.state.data.id} className="btn btn-primary">Edit</Link>
+                        <Link to={'/editShop/' + this.state.data.id} className="btn btn-primary">Edit</Link>
                         <Button outline color="danger" onClick={this.onDelete}>Delete</Button>
                     </div>
                 </td>
@@ -70,16 +70,21 @@ export class ShopList extends Component {
                 })
             })
             .catch((error) => { console.log(error); });
+
+        //console.log(this.props.location.state);
+        //console.log(this.state.shops);
+        //if (typeof this.props.location.state !== 'undefined') {
+        //    let shops = this.state.shops;
+        //    shops.push(this.props.location.state.newShop);
+        //    this.setState({ shops: shops });
+        //}
     }
 
     onAddShop() {
-        this.setState({ redirectToShopForm: true, shopToEdit: { name: '', address: '', lat: null, lng: null } });
+        console.log(this.state.shops);
     }
 
     onRemoveShop(shop) {
-        console.log('remove');
-        console.log(shop);
-
         fetch('api/Shops/' + shop.id, {
             method: 'DELETE'
         })
@@ -96,6 +101,9 @@ export class ShopList extends Component {
     renderShopsTable(shops) {
         var remove = this.onRemoveShop;
         var edit = this.onEditShop;
+
+        console.log(this.props.location.state);
+        console.log(this.state.shops);
 
         return (
             <div>
@@ -267,7 +275,8 @@ export class ShopCreate extends Component {
             shop_name: '',
             shop_address: '',
             shop_lat: '',
-            shop_lng: ''
+            shop_lng: '',
+            newShop: null
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -295,7 +304,7 @@ export class ShopCreate extends Component {
         })
             .catch((error) => { console.log(error); });
 
-        this.setState({ redirectToShopList: true })
+        this.setState({ redirectToShopList: true, newShop: shop })
     }
 
     onCancel(e) {
@@ -317,7 +326,8 @@ export class ShopCreate extends Component {
     render() {
         if (this.state.redirectToShopList) {
             return <Redirect to={{
-                pathname: '/shops'
+                pathname: '/shops',
+                state: { newShop: this.state.newShop }
             }} />
         }
 
