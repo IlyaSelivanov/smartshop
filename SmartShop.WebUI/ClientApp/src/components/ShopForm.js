@@ -7,6 +7,7 @@ export class ShopForm extends Component {
         super(props);
 
         this.state = {
+            isLoaded: false,
             shop_name: '',
             shop_address: '',
             shop_lat: '',
@@ -23,6 +24,7 @@ export class ShopForm extends Component {
 
     componentDidMount() {
         this.setState({
+            isLoaded: true,
             shop_name: this.props.shopName,
             shop_address: this.props.shopAddress,
             shop_lat: this.props.shopLat,
@@ -64,12 +66,21 @@ export class ShopForm extends Component {
     }
 
     render() {
+        const center = {
+            lat: this.state.shop_lat === '' ? null : this.state.shop_lat,
+            lng: this.state.shop_lng === '' ? null : this.state.shop_lng
+        };
+
+        if (!this.state.isLoaded) {
+            return <p>Loading..</p>
+        }
+
         return (
             <div>
                 <h1>Shop Form</h1>
                 <Row>
                     <Col>
-                        <Map onMapClick={this.onMapClickHandle} />
+                        <Map onMapClick={this.onMapClickHandle} Center={center} />
                     </Col>
                     <Col>
                         <Form onSubmit={this.onSubmit}>
@@ -88,11 +99,11 @@ export class ShopForm extends Component {
                                 <Row form>
                                     <Col sm={1}>Lat: </Col>
                                     <Col>
-                                        <Input type="text" name="lat" id="lat" value={this.state.shop_lat == null ? 'null' : this.state.shop_lat} readOnly></Input>
+                                        <Input type="text" name="lat" id="lat" value={this.state.shop_lat == null ? '' : this.state.shop_lat} readOnly></Input>
                                     </Col>
                                     <Col sm={1}>Lng: </Col>
                                     <Col>
-                                        <Input type="text" name="lng" id="lng" value={this.state.shop_lng == null ? 'null' : this.state.shop_lng} readOnly></Input>
+                                        <Input type="text" name="lng" id="lng" value={this.state.shop_lng == null ? '' : this.state.shop_lng} readOnly></Input>
                                     </Col>
                                 </Row>
                             </FormGroup>

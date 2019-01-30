@@ -24,18 +24,23 @@ export class Map extends Component {
     }
 
     componentDidMount() {
-        geolocation.getCurrentPosition((position) => {
-            this.setState({
-                center: {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                }
-            })
-        });
+        console.log(this.props);
+        if (this.props.Center !== undefined && this.props.Center.lat !== null) {
+            this.setState({ center: this.props.Center })
+        } else {
+            geolocation.getCurrentPosition((position) => {
+                this.setState({
+                    center: {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    }
+                })
+            });
+        }
     }
 
     onMapClick(e) {
-        if (this.props.onMapClick == null) {
+        if (this.props.onMapClick === undefined) {
             return;
         } else {
             this.props.onMapClick({ lat: e.latLng.lat(), lng: e.latLng.lng() });
@@ -46,11 +51,13 @@ export class Map extends Component {
         let GoogleMapExample = withGoogleMap(props => (
             <GoogleMap
                 defaultCenter={this.state.center}
-                defaultZoom={15}
+                defaultZoom={18}
                 onClick={this.onMapClick}
             >
+                <Marker position={this.state.center} />
             </GoogleMap>
         ));
+
         return (
             <Container>
                 <Row>
