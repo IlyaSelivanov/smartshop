@@ -26,8 +26,8 @@ namespace SmartShop.WebUI.Controllers {
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id) {
-            bool result = await _repository.DeleteShopAsync(id);
+        public IActionResult Delete(int id) {
+            bool result = _repository.DeleteShop(id);
 
             if (result)
                 return Ok();
@@ -36,14 +36,14 @@ namespace SmartShop.WebUI.Controllers {
         }
 
         [HttpPost()]
-        public async Task<IActionResult> PostAsync([FromBody] Shop shop) {
-            await _repository.CreateShopAsync(shop);
+        public IActionResult Post([FromBody] Shop shop) {
+            _repository.CreateShop(shop);
             return Ok();
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> PostAsync(int id, [FromBody] Shop shop) {
-            await _repository.UpdateShopAsync(id, shop);
+        public IActionResult Post(int id, [FromBody] Shop shop) {
+            _repository.UpdateShop(id, shop);
             return Ok();
         }
     }

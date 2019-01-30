@@ -58,5 +58,40 @@ namespace SmartShop.Domain.Concrete {
                 return true;
             }
         }
+
+        public void CreateShop(Shop shop) {
+            Shop existing = _context.Shops.FirstOrDefault(s => s.Id == shop.Id);
+
+            if (existing == null) {
+                _context.Shops.Add(shop);
+                _context.SaveChanges();
+            }
+        }
+
+        public void UpdateShop(int id, Shop shop) {
+            Shop existing = _context.Shops.FirstOrDefault(s => s.Id == id);
+
+            if (existing == null)
+                return;
+
+            existing.Name = shop.Name;
+            existing.Address = shop.Address;
+            existing.Lat = shop.Lat;
+            existing.Lng = shop.Lng;
+
+            _context.SaveChanges();
+        }
+
+        public bool DeleteShop(int id) {
+            Shop shop = _context.Shops.FirstOrDefault(s => s.Id == id);
+
+            if (shop == null)
+                return false;
+            else {
+                _context.Shops.Remove(shop);
+                _context.SaveChanges();
+                return true;
+            }
+        }
     }
 }

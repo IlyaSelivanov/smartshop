@@ -6,7 +6,9 @@ import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import { Products } from './components/Products';
 import { Map } from './components/Map';
-import { ShopList, ShopEdit, ShopCreate } from './components/Shops';
+import { ShopList } from './components/ShopList';
+import { ShopEdit } from './components/ShopEdit';
+import { ShopCreate } from './components/ShopCreate';
 
 export default class App extends Component {
     static displayName = App.name;

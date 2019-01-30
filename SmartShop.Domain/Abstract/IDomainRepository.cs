@@ -13,5 +13,9 @@ namespace SmartShop.Domain.Abstract
         Task CreateShopAsync(Shop shop);
         Task UpdateShopAsync(int id, Shop shop);
         Task<bool> DeleteShopAsync(int id);
+
+        void CreateShop(Shop shop);
+        void UpdateShop(int id, Shop shop);
+        bool DeleteShop(int id);
     }
 }
