@@ -40,10 +40,12 @@ export class Map extends Component {
     }
 
     onMapClick(e) {
+        this.setState({ center: { lat: e.latLng.lat(), lng: e.latLng.lng() } });
+
         if (this.props.onMapClick === undefined) {
             return;
         } else {
-            this.props.onMapClick({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+            this.props.onMapClick(this.state.center);
         }
     }
 
